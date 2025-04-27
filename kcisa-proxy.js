@@ -1,0 +1,19 @@
+export default async function handler(req, res) {
+  const { numOfRows = '10', pageNo = '1', dtype = '', title = '공연' } = req.query;
+
+  const serviceKey = '8c75fc35-e4a5-4992-8387-2aeb9c3aef28'; // your API Key
+
+  const apiUrl = `http://api.kcisa.kr/openapi/CNV_060/request?serviceKey=${serviceKey}&numOfRows=${numOfRows}&pageNo=${pageNo}&dtype=${encodeURIComponent(dtype)}&title=${encodeURIComponent(title)}`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const text = await response.text();
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'application/xml; charset=UTF-8');
+    res.status(200).send(text);
+  } catch (error) {
+    console.error('Proxy error:', error);
+    res.status(500).send('<response><header><resultCode>99</resultCode><resultMsg>Proxy Error</resultMsg></header><body/></response>');
+  }
+}
